@@ -1,0 +1,53 @@
+<html>
+	<head>
+		<script src="/socket.io/socket.io.js"></script>
+	</head>
+	<body>
+		<form id="myForm">
+            <div>
+              <label for="idH">Id Hotel:</label>
+              <input type="text" id="idH" name="idH" >
+            </div>
+			<div>
+				<label for="idC">Id Chambe:</label>
+				<input type="text" id="idC" name="idC" >
+			  </div>
+              
+            </div>
+          </form>
+		  <button id="reserverC">Reserver</button>
+		  <button id="afficheC">Afficher Chambres</button>
+	<script>
+		const socket = io.connect();
+		{# alert(" <div><label for='nom'>veuillez saisir votre nom!:</label><input type='text' id='nom' name='nom' ></div>") #}
+		const n=prompt("veuillez saisir votre nom!","")
+		console.log(n)
+		document.getElementById('afficheC').addEventListener('click', function() {
+			var idH=document.getElementById('idH').value
+			console.log(idH)
+			socket.emit("afficheC",idH)
+			
+		  });
+		  document.getElementById('reserverC').addEventListener('click', function() {
+			var idC=document.getElementById('idC').value
+			console.log(idC)
+			var obj={idC,nom_client:n}
+			
+			socket.emit("reserver",obj)
+			alert("chambre avec id "+idC+" est reserve au client "+n)
+			
+		  });
+		socket.on("listC", (data) => {
+			console.log(data)
+			var idH=document.getElementById('idH').value
+			const newElement = document.createElement('p');
+			const newElement1 = document.createElement('p');
+			newElement.innerText = 'Chambres non reserve de hotel id : '+idH;
+			newElement1.innerText = data
+			// Append the new element to the body
+			document.body.appendChild(newElement);
+			document.body.appendChild(newElement1);
+		})
+	</script>
+    </body>
+</html>
